@@ -1,12 +1,6 @@
-# Jumpy Guy - Not Quite a Game in Elm
+# Elm - MMO
 
-This is the bare-bones beginning of what might become a game. It uses
-subscriptions for animation and listening to keypresses, so it might be worth
-playing with to see how subscriptions work, even if you're not interested in
-building a game.
-
-Also, as you add more enemies you might find that they share some data in common
-with the player. That's a good chance to experiment with extensible records.
+it's an elm mmo
 
 ## Getting Started
 
