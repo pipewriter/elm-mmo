@@ -1,0 +1,224 @@
+var _user$project$Errors$isLineNumber = function (string) {
+	return A2(
+		_elm_lang$core$String$all,
+		function (c) {
+			return _elm_lang$core$Native_Utils.eq(
+				c,
+				_elm_lang$core$Native_Utils.chr(' ')) || _elm_lang$core$Char$isDigit(c);
+		},
+		string);
+};
+var _user$project$Errors$isUnderline = function (line) {
+	return A2(
+		_elm_lang$core$String$all,
+		function (c) {
+			return _elm_lang$core$Native_Utils.eq(
+				c,
+				_elm_lang$core$Native_Utils.chr(' ')) || _elm_lang$core$Native_Utils.eq(
+				c,
+				_elm_lang$core$Native_Utils.chr('^'));
+		},
+		line);
+};
+var _user$project$Errors$isBigBreaker = function (line) {
+	return A2(_elm_lang$core$String$startsWith, '===============', line);
+};
+var _user$project$Errors$isBreaker = function (line) {
+	return A2(_elm_lang$core$String$startsWith, '-- ', line) && A2(_elm_lang$core$String$contains, '----------', line);
+};
+var _user$project$Errors_ops = _user$project$Errors_ops || {};
+_user$project$Errors_ops['=>'] = F2(
+	function (v0, v1) {
+		return {ctor: '_Tuple2', _0: v0, _1: v1};
+	});
+var _user$project$Errors$colorful = F2(
+	function (color, msg) {
+		return A2(
+			_elm_lang$html$Html$span,
+			{
+				ctor: '::',
+				_0: _elm_lang$html$Html_Attributes$style(
+					{
+						ctor: '::',
+						_0: A2(_user$project$Errors_ops['=>'], 'color', color),
+						_1: {ctor: '[]'}
+					}),
+				_1: {ctor: '[]'}
+			},
+			{
+				ctor: '::',
+				_0: _elm_lang$html$Html$text(msg),
+				_1: {ctor: '[]'}
+			});
+	});
+var _user$project$Errors$processLine = function (line) {
+	var _p0 = A2(_elm_lang$core$String$split, '|', line);
+	if (_p0.ctor === '[]') {
+		return {
+			ctor: '::',
+			_0: _elm_lang$html$Html$text(line),
+			_1: {ctor: '[]'}
+		};
+	} else {
+		var _p1 = _p0._0;
+		if (!_user$project$Errors$isLineNumber(_p1)) {
+			return {
+				ctor: '::',
+				_0: _elm_lang$html$Html$text(line),
+				_1: {ctor: '[]'}
+			};
+		} else {
+			var restOfLine = A2(_elm_lang$core$String$join, '|', _p0._1);
+			var marker = _elm_lang$core$Native_Utils.eq(
+				A2(_elm_lang$core$String$left, 1, restOfLine),
+				'>') ? A2(_user$project$Errors$colorful, '#D5200C', '>') : _elm_lang$html$Html$text(' ');
+			return {
+				ctor: '::',
+				_0: A2(
+					_user$project$Errors$colorful,
+					'#9A9A9A',
+					A2(_elm_lang$core$Basics_ops['++'], _p1, '|')),
+				_1: {
+					ctor: '::',
+					_0: marker,
+					_1: {
+						ctor: '::',
+						_0: A2(
+							_user$project$Errors$colorful,
+							'#9A9A9A',
+							A2(_elm_lang$core$String$dropLeft, 1, restOfLine)),
+						_1: {ctor: '[]'}
+					}
+				}
+			};
+		}
+	}
+};
+var _user$project$Errors$addColorToLine = function (line) {
+	return A3(
+		_elm_lang$core$Basics$flip,
+		F2(
+			function (x, y) {
+				return A2(_elm_lang$core$Basics_ops['++'], x, y);
+			}),
+		{
+			ctor: '::',
+			_0: _elm_lang$html$Html$text('\n'),
+			_1: {ctor: '[]'}
+		},
+		_user$project$Errors$isBreaker(line) ? {
+			ctor: '::',
+			_0: A2(
+				_user$project$Errors$colorful,
+				'rgb(51, 187, 200)',
+				A2(_elm_lang$core$Basics_ops['++'], '\n\n', line)),
+			_1: {ctor: '[]'}
+		} : (_user$project$Errors$isBigBreaker(line) ? {
+			ctor: '::',
+			_0: A2(_user$project$Errors$colorful, 'rgb(211, 56, 211)', line),
+			_1: {ctor: '[]'}
+		} : (_user$project$Errors$isUnderline(line) ? {
+			ctor: '::',
+			_0: A2(_user$project$Errors$colorful, '#D5200C', line),
+			_1: {ctor: '[]'}
+		} : (A2(_elm_lang$core$String$startsWith, '    ', line) ? {
+			ctor: '::',
+			_0: A2(_user$project$Errors$colorful, '#9A9A9A', line),
+			_1: {ctor: '[]'}
+		} : _user$project$Errors$processLine(line)))));
+};
+var _user$project$Errors$addColors = function (message) {
+	return A2(
+		_elm_lang$core$List$concatMap,
+		_user$project$Errors$addColorToLine,
+		_elm_lang$core$String$lines(message));
+};
+var _user$project$Errors$view = function (model) {
+	return A2(
+		_elm_lang$html$Html$div,
+		{
+			ctor: '::',
+			_0: _elm_lang$html$Html_Attributes$style(
+				{
+					ctor: '::',
+					_0: A2(_user$project$Errors_ops['=>'], 'width', '100%'),
+					_1: {
+						ctor: '::',
+						_0: A2(_user$project$Errors_ops['=>'], 'min-height', '100%'),
+						_1: {
+							ctor: '::',
+							_0: A2(_user$project$Errors_ops['=>'], 'display', 'flex'),
+							_1: {
+								ctor: '::',
+								_0: A2(_user$project$Errors_ops['=>'], 'flex-direction', 'column'),
+								_1: {
+									ctor: '::',
+									_0: A2(_user$project$Errors_ops['=>'], 'align-items', 'center'),
+									_1: {
+										ctor: '::',
+										_0: A2(_user$project$Errors_ops['=>'], 'background-color', 'black'),
+										_1: {
+											ctor: '::',
+											_0: A2(_user$project$Errors_ops['=>'], 'color', 'rgb(233, 235, 235)'),
+											_1: {
+												ctor: '::',
+												_0: A2(_user$project$Errors_ops['=>'], 'font-family', 'monospace'),
+												_1: {
+													ctor: '::',
+													_0: A2(_user$project$Errors_ops['=>'], 'text-align', 'left'),
+													_1: {ctor: '[]'}
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				}),
+			_1: {ctor: '[]'}
+		},
+		{
+			ctor: '::',
+			_0: A2(
+				_elm_lang$html$Html$div,
+				{
+					ctor: '::',
+					_0: _elm_lang$html$Html_Attributes$style(
+						{
+							ctor: '::',
+							_0: A2(_user$project$Errors_ops['=>'], 'display', 'block'),
+							_1: {
+								ctor: '::',
+								_0: A2(_user$project$Errors_ops['=>'], 'white-space', 'pre'),
+								_1: {
+									ctor: '::',
+									_0: A2(_user$project$Errors_ops['=>'], 'background-color', 'rgb(39, 40, 34)'),
+									_1: {
+										ctor: '::',
+										_0: A2(_user$project$Errors_ops['=>'], 'padding', '2em'),
+										_1: {ctor: '[]'}
+									}
+								}
+							}
+						}),
+					_1: {ctor: '[]'}
+				},
+				_user$project$Errors$addColors(model)),
+			_1: {ctor: '[]'}
+		});
+};
+var _user$project$Errors$update = F2(
+	function (_p2, model) {
+		return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
+	});
+var _user$project$Errors$init = function (errorMessage) {
+	return {ctor: '_Tuple2', _0: errorMessage, _1: _elm_lang$core$Platform_Cmd$none};
+};
+var _user$project$Errors$main = _elm_lang$html$Html$programWithFlags(
+	{
+		init: _user$project$Errors$init,
+		update: _user$project$Errors$update,
+		view: _user$project$Errors$view,
+		subscriptions: _elm_lang$core$Basics$always(_elm_lang$core$Platform_Sub$none)
+	})(_elm_lang$core$Json_Decode$string);
